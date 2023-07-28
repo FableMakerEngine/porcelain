@@ -32,21 +32,21 @@ class TestScene extends ceramic.Scene {
     text.pointSize = 52;
     text.anchor(0.5, 0.5);
     text.pos(screen.width * 0.5, screen.height * 0.5);
+    text.depth = 10;
     add(text);
   }
 
   private function createRect() {
     rect = new porcelain.Rect(50, 50, 4);
+    rect.depth = 10;
     add(rect);
   }
 
   private function createTilemap() {
     var tilemap = new Tilemap();
-    tilemap.pos(width * 0.5, height * 0.5);
     tilemap.roundTilesTranslation = 1;
-    tilemap.tilemapData = assets.tilemap('MapTest.xml');
-    trace(assets.tilemap('MapTest.xml'));
-    tilemap.depth = 99;
+    tilemap.tilemapData = assets.tilemap('data/MapTest.tmx');
+    tilemap.depth = 0;
     add(tilemap);
   }
 
