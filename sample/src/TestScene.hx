@@ -1,11 +1,14 @@
 package;
 
+import ceramic.Tilemap;
 import ceramic.Text;
-import haxe.Json;
+
+using ceramic.TilemapPlugin;
 
 class TestScene extends ceramic.Scene {
   private var text: Text;
   private var rect: porcelain.Rect;
+  private var tileemap: Tilemap;
 
   public function new() {
     super();
@@ -13,11 +16,13 @@ class TestScene extends ceramic.Scene {
 
   public override function preload() {
     trace('Test Scene Initialized!');
+    assets.addTilemap('data/MapTest.tmx');
   }
 
   public override function create() {
     createText();
     createRect();
+    createTilemap();
   }
 
   private function createText() {
@@ -33,6 +38,16 @@ class TestScene extends ceramic.Scene {
   private function createRect() {
     rect = new porcelain.Rect(50, 50, 4);
     add(rect);
+  }
+
+  private function createTilemap() {
+    var tilemap = new Tilemap();
+    tilemap.pos(width * 0.5, height * 0.5);
+    tilemap.roundTilesTranslation = 1;
+    tilemap.tilemapData = assets.tilemap('MapTest.xml');
+    trace(assets.tilemap('MapTest.xml'));
+    tilemap.depth = 99;
+    add(tilemap);
   }
 
   public override function resize(width: Float, height: Float) {
