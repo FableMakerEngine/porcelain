@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Ha_ley",
+        "displayName": "Haley",
+        "colliders": [
+            {
+                "type": "QUAD",
+                "unit": "PIXEL",
+                "rect": {
+                    "Offset_x": 0,
+                    "offset_y": 0,
+                    "width": 100,
+                    "height": 100,
+                    "anchor": {
+                        "x": 0.5,
+                        "y": 0
+                    }
+                }
+            }
+        ]
+    }
+]

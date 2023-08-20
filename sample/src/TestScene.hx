@@ -1,17 +1,20 @@
 package;
 
-import ceramic.Tilemap;
-import ceramic.Text;
+import objects.player.enums.HaleyState;
+import objects.player.Input;
+import objects.player.enums.PlayerInput;
+import ceramic.TextAlign;
+import objects.player.Haley;
+import elements.Im;
 
-using ceramic.TilemapPlugin;
-
+// import elements.Im;
 class TestScene extends ceramic.Scene {
-  private var text: Text;
-  private var rect: porcelain.Rect;
-  private var tileemap: Tilemap;
+  private var haley: Haley;
+  private var _isDebugWindowActive = false;
 
   public function new() {
     super();
+    Input.init();
   }
 
   public override function preload() {
@@ -20,41 +23,69 @@ class TestScene extends ceramic.Scene {
   }
 
   public override function create() {
-    createText();
-    createRect();
-    createTilemap();
+    createHaley();
+    /*
+      for (i in 0...10) {
+        var child = new EntityTest("Entity_" + i);
+        add(child);
+      }
+      for (child in children) {
+        if (child is EntityBase) {
+          debugList.push(cast(child));
+        }
+      }
+     */
   }
 
-  private function createText() {
-    text = new Text();
-    text.content = "Hello World!";
-    text.color = ceramic.Color.WHITE;
-    text.pointSize = 52;
-    text.anchor(0.5, 0.5);
-    text.pos(screen.width * 0.5, screen.height * 0.5);
-    text.depth = 10;
-    add(text);
+  private function createHaley() {
+    haley = new Haley();
+    haley.pos(screen.width * 0.5, screen.height * 0.5);
+    add(haley);
   }
 
-  private function createRect() {
-    rect = new porcelain.Rect(50, 50, 4);
-    rect.depth = 10;
-    add(rect);
-  }
-
-  private function createTilemap() {
-    var tilemap = new Tilemap();
-    tilemap.roundTilesTranslation = 1;
-    tilemap.tilemapData = assets.tilemap('data/MapTest.tmx');
-    tilemap.depth = 0;
-    add(tilemap);
-  }
-
-  public override function resize(width: Float, height: Float) {
-    text.pos(width * 0.5, height * 0.5);
-  }
+  public override function resize(width: Float, height: Float) {}
 
   public override function update(dt: Float) {
-    text.rotation += 25 * dt;
+    haley.update(dt);
+
+    if (Input.isJustPressed(DEBUG)) {
+      if (_isDebugWindowActive) {
+        _isDebugWindowActive = false;
+      }
+      else {
+        _isDebugWindowActive = true;
+      }
+    }
+    if (_isDebugWindowActive) {
+      buildUI();
+    }
+  }
+
+  public function buildUI() {
+    Im.begin('haley debug window', 300);
+    Im.text("MetaData", TextAlign.CENTER);
+    Im.separator();
+    Im.text("Entity name: " + haley.name);
+    Im.text("Entity class: " + Type.getClassName(Type.getClass(haley)) + ".hx");
+    Im.text("active: " + haley.active);
+    Im.check("Toggle visibility", Im.bool(haley.active), true);
+    Im.separator();
+    Im.space();
+
+    Im.text("Coordinates", TextAlign.CENTER);
+    Im.separator();
+    Im.text("x: " + Math.round(haley.x));
+    Im.text("y: " + Math.round(haley.y));
+    //  Im.text("Direction: " + haley.direction);
+    if (Im.button("center Haley")) {
+      haley.pos(screen.width * 0.5, screen.height * 0.5);
+    }
+    Im.space();
+    Im.separator();
+    Im.text("State Machine", TextAlign.CENTER);
+    Im.separator();
+    Im.text("active state: " + haley.currentState());
+    Im.space();
+    Im.end();
   }
 }

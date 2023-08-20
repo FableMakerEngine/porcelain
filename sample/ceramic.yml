@@ -18,7 +18,7 @@ app:
     #- ase
 
     # Sprite support (requires ase plugin to create sprites from .ase/.aseprite files)
-    #- sprite
+    - sprite
 
     # Tilemap support (.tmx/.tsx loading included, requires ldtk plugin to create tilemaps from .ldtk files)
     - tilemap
@@ -30,10 +30,10 @@ app:
     #- http
 
     # UI-related classes
-    #- ui
+    - ui
 
     # Immediate GUI utility (requires ui plugin)
-    #- elements
+    - elements
 
     # Gif capture utility
     #- gif
@@ -54,7 +54,7 @@ app:
     #- midi
 
     # Add entity runtime scripting support: entity.scriptContent = ...
-    #- script
+    - script
 
   libs:
     - porcelain
