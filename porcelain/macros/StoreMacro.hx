@@ -1,4 +1,4 @@
-package porcelain.macros;
+package;
 
 import haxe.macro.Type;
 import haxe.macro.Context;
@@ -17,6 +17,13 @@ class StoreMacro {
   macro public static function build(): Array<Field> {
     var localFields = Context.getBuildFields();
     var mutationFields = getFieldsWithMeta(localFields, 'mutation');
+
+    localFields.push({
+      name: 'status',
+      access: [Access.APrivate, Access.AStatic],
+      kind: FProp('default', 'null', macro : String),
+      pos: Context.currentPos()
+    });
 
     if (mutationFields != null) {
       var commitMethodFields = createStaticMethods(mutationFields);
@@ -50,7 +57,13 @@ class StoreMacro {
 
     return {
       args: funcArgs,
-      expr: macro return Reflect.callMethod($i{className}, Reflect.field($i{className}, $v{methodName}), $a{argExprs})
+      expr: macro $b{
+        [
+          macro status = 'mutation',
+          macro Reflect.callMethod($i{className}, Reflect.field($i{className}, $v{methodName}), $a{argExprs}),
+          macro status = 'resting'
+        ]
+      }
     }
   }
 
