@@ -1,16 +1,8 @@
 package objects.player.states;
 
-import ceramic.StateMachine;
-import objects.player.enums.HaleyState;
-import ceramic.State;
-
-class Haley_IdleState extends State {
-  private var context: Haley;
-
-  public function new(context: Haley) {
-    super();
-    this.context = context;
-    machine = context.machine;
+class Haley_IdleState extends Haley_BaseState {
+  public function new(entity: Haley) {
+    super(entity);
   }
 
   public override function enter() {
@@ -20,6 +12,6 @@ class Haley_IdleState extends State {
 
   public override function update(delta: Float) {
     super.update(delta);
-    if (context.isMoving()) context.switchState(HaleyState.WALKING);
+    if (entity.isMoving()) switchState(WALKING);
   }
 }

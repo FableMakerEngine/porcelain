@@ -19,7 +19,8 @@ class TestScene extends ceramic.Scene {
 
   public override function preload() {
     trace('Test Scene Initialized!');
-    assets.addTilemap('data/MapTest.tmx');
+    assets.add(Images.IMG__SMOLL);
+    //    assets.addTilemap('data/MapTest.tmx');
   }
 
   public override function create() {
@@ -38,7 +39,7 @@ class TestScene extends ceramic.Scene {
   }
 
   private function createHaley() {
-    haley = new Haley();
+    haley = new Haley(assets);
     haley.pos(screen.width * 0.5, screen.height * 0.5);
     add(haley);
   }

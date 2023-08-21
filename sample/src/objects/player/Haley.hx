@@ -1,5 +1,8 @@
 package objects.player;
 
+import ceramic.Assets;
+import ceramic.Color;
+import ceramic.Quad;
 import objects.player.states.Haley_WalkingState;
 import objects.player.states.Haley_IdleState;
 import ceramic.StateMachine;
@@ -18,10 +21,26 @@ class Haley extends Sprite {
   @:isVar public var moveSpeed(get, set): Int;
   @:isVar public var dashSpeed(get, set): Int;
 
-  public function new() {
+  private var debugSprite: Quad;
+  private var assets: Assets;
+
+  public function new(assets: Assets) {
     super();
+    this.assets = assets;
     setupStateMachine();
     initMembers();
+    createDebugQuad();
+  }
+
+  private function createDebugQuad() {
+    debugSprite = new Quad();
+    debugSprite.anchor(0.5, 0.5);
+    debugSprite.texture = assets.texture(Images.IMG__SMOLL);
+    // debugSprite.size(100, 100);
+    debugSprite.pos(width * 0.5, height * 0.5);
+    // debugSprite.color = Color.BLUE;
+
+    add(debugSprite);
   }
 
   override function update(delta: Float) {
