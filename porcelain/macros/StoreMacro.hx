@@ -1,4 +1,4 @@
-package porcelain.macros;
+package;
 
 import haxe.macro.Type;
 import haxe.macro.Context;
@@ -8,19 +8,16 @@ import haxe.macro.TypeTools;
 using Lambda;
 using StringTools;
 
-typedef ClassFieldsPair = {
-  className: Dynamic,
-  fields: Array<ClassField>
-}
+class TestMacro {
+  public static var collectedFields: Map<String, Array<Field>> = [];
 
-class StoreMacro {
   macro public static function build(): Array<Field> {
     var localFields = Context.getBuildFields();
     var mutationFields = getFieldsWithMeta(localFields, 'mutation');
 
     localFields.push({
       name: 'status',
-      access: [Access.APrivate, Access.AStatic],
+      access: [Access.APublic, Access.AStatic],
       kind: FProp('default', 'null', macro : String),
       pos: Context.currentPos()
     });
@@ -49,14 +46,15 @@ class StoreMacro {
     var funcArgs = args.map(arg -> {
       var funcArg: FunctionArg = {
         name: arg.name,
-        opt: arg.opt,
-        type: TypeTools.toComplexType(arg.t),
+        opt: false,
+        type: arg.type
       }
       return funcArg;
     });
 
     return {
       args: funcArgs,
+      ret: null,
       expr: macro $b{
         [
           macro status = 'mutation',
@@ -67,48 +65,99 @@ class StoreMacro {
     }
   }
 
-  public static function getClassFieldsFromKind(kind): Array<ClassFieldsPair> {
-    var fields: Array<ClassFieldsPair> = [];
-
+  public static function getClassFromKind(kind) {
+    var cls;
+    var getClsKind = (name: String) -> {
+      return switch Context.getType(name) {
+        case TInst(t, params): t.get();
+        case _: null;
+      }
+    }
     switch kind {
-      case FVar(TPath(p), e):
-        switch Context.getType(p.name) {
-          case TInst(t, params):
-            var type = t.get();
-            var tFields = type.fields.get();
-            var tStatics = type.statics.get();
-
-            fields.push({
-              className: p.name,
-              fields: tFields.concat(tStatics)
-            });
+      case FVar(t, e):
+        switch t {
+          case TPath(p):
+            cls = getClsKind(p.name);
           case _:
+            if (e != null) {
+              switch e.expr {
+                case ENew(t, params):
+                  cls = getClsKind(t.name);
+                case _:
+              }
+            }
         }
+
       case _:
     }
-    return fields;
+    return cls;
+  }
+
+  public static function isExprTrue(expr: Expr): Bool {
+    return switch expr.expr {
+      case EConst(CIdent(s)):
+        return s == 'true';
+      case _:
+        null;
+    }
+  }
+
+  public static function extractStringFromExpr(expr: Expr): String {
+    return switch expr.expr {
+      case EConst(CString(s, kind)):
+        s;
+      case _:
+        null;
+    }
+  }
+
+  public static function extractObjFieldsFromArrayExpr(expr: Expr): Dynamic {
+    return switch expr.expr {
+      case EArrayDecl(values):
+        var exValues = [];
+        for (value in values) {
+          switch value.expr {
+            case EObjectDecl(fields):
+              var t = fields.list();
+              var typeField = t.find(i -> i.field == 'typeName');
+              var nameField = t.find(i -> i.field == 'name');
+              var optField = t.find(i -> i.field == 'opt');
+              var typeName = extractStringFromExpr(typeField.expr);
+              exValues.push({
+                type: Context.toComplexType(Context.getType(typeName)),
+                opt: isExprTrue(optField.expr),
+                name: extractStringFromExpr(nameField.expr)
+              });
+            case _:
+          }
+        }
+        exValues;
+      case _:
+        null;
+    }
   }
 
   public static function createStaticMethods(mutationFields: Array<Field>): Array<Field> {
     var funcsToCopy: Array<Field> = [];
 
     for (field in mutationFields) {
-      var typeFieldPairs = getClassFieldsFromKind(field.kind);
-      for (pair in typeFieldPairs) {
-        for (tField in pair.fields) {
-          switch TypeTools.follow(tField.type) {
-            case TFun(args, ret):
-              var name = tField.name;
-              var func = createFunction(pair.className, name, args);
-              var newMethod: Field = {
-                name: name,
-                kind: FieldType.FFun(func),
-                access: [Access.APublic, Access.AStatic],
-                pos: Context.currentPos(),
-                doc: tField.doc
-              };
-              funcsToCopy.push(newMethod);
-            case _:
+      var cls = getClassFromKind(field.kind);
+      var clsFields = cls.statics.get();
+      for (field in clsFields) {
+        var fieldMeta = field.meta.get();
+        for (meta in fieldMeta) {
+          if (meta.name == 'tempFieldData') {
+            var metaParams = meta.params;
+            var fieldName = extractStringFromExpr(metaParams[0]);
+            var fieldArgs = extractObjFieldsFromArrayExpr(metaParams[1]);
+            var func = createFunction(cls.name, fieldName, fieldArgs);
+            var newMethod: Field = {
+              name: fieldName,
+              kind: FieldType.FFun(func),
+              access: [Access.APublic, Access.AStatic],
+              pos: Context.currentPos()
+            };
+            funcsToCopy.push(newMethod);
           }
         }
       }
