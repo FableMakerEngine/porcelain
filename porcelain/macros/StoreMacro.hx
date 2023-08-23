@@ -23,8 +23,8 @@ class StoreMacro {
     });
 
     if (mutationFields != null) {
-      var commitMethodFields = createStaticMethods(mutationFields);
-      for (field in commitMethodFields) {
+      var newMethodFields = createStaticMethods(mutationFields);
+      for (field in newMethodFields) {
         if (localFields.exists(f -> f.name == field.name)) {
           trace('A field with the name ${field.name} already exists, skipping');
           continue;
@@ -41,19 +41,11 @@ class StoreMacro {
     return fields.filter(i -> i.meta.exists(m -> m.name == metaName));
   }
 
-  public static function createFunction(className: String, methodName: String, args: Dynamic): Function {
+  public static function createFunction(className: String, methodName: String, args: Array<FunctionArg>): Function {
     var argExprs = args.map(arg -> macro $i{arg.name});
-    var funcArgs = args.map(arg -> {
-      var funcArg: FunctionArg = {
-        name: arg.name,
-        opt: false,
-        type: arg.type
-      }
-      return funcArg;
-    });
 
     return {
-      args: funcArgs,
+      args: args,
       ret: null,
       expr: macro $b{
         [
@@ -111,7 +103,7 @@ class StoreMacro {
     }
   }
 
-  public static function extractObjFieldsFromArrayExpr(expr: Expr): Dynamic {
+  public static function extractArgsFromObjectArrayExpr(expr: Expr): Array<FunctionArg> {
     return switch expr.expr {
       case EArrayDecl(values):
         var exValues = [];
@@ -149,7 +141,7 @@ class StoreMacro {
           if (meta.name == 'tempFieldData') {
             var metaParams = meta.params;
             var fieldName = extractStringFromExpr(metaParams[0]);
-            var fieldArgs = extractObjFieldsFromArrayExpr(metaParams[1]);
+            var fieldArgs = extractArgsFromObjectArrayExpr(metaParams[1]);
             var func = createFunction(cls.name, fieldName, fieldArgs);
             var newMethod: Field = {
               name: fieldName,
