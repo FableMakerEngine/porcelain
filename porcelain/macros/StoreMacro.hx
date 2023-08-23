@@ -60,22 +60,16 @@ class StoreMacro {
 
   public static function getClassFromKind(kind): ClassType {
     var cls;
-    var getClsType = (name: String) -> {
-      return switch Context.getType(name) {
-        case TInst(t, params): t.get();
-        case _: null;
-      }
-    }
     switch kind {
       case FVar(t, e):
         switch t {
           case TPath(p):
-            cls = getClsType(p.name);
+            cls = TypeTools.getClass(Context.getType(p.name));
           case _:
             if (e != null) {
               switch e.expr {
                 case ENew(t, params):
-                  cls = getClsType(t.name);
+                  cls = TypeTools.getClass(Context.getType(t.name));
                 case _:
               }
             }
