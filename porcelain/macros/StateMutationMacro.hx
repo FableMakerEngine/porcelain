@@ -44,10 +44,14 @@ class StateMutationMacro {
               }
             }
 
-            // var type
             lf.meta.push({
               name: 'tempFieldData',
               params: [macro $v{name}, macro $v{argsForMeta}],
+              pos: lf.pos
+            });
+
+            lf.meta.push({
+              name: ':keep',
               pos: lf.pos
             });
           }
