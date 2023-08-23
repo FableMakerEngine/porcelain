@@ -1,12 +1,12 @@
 {
-  "window.title": "${activeEditorShort} — cyclops",
-  "search.exclude": {
-    "**/.git": true,
-    "**/node_modules": true,
-    "**/tmp": true,
-    "**/out": true
-  },
-  "haxe.executable": "libs/ceramic/tools/haxe.cmd",
-  "haxelib.executable": "libs/ceramic/tools/haxelib.cmd",
-  "editor.formatOnSave": true
+    "window.title": "${activeEditorShort} — cyclops",
+    "search.exclude": {
+        "**/.git": true,
+        "**/node_modules": true,
+        "**/tmp": true,
+        "**/out": true
+    },
+    "haxe.executable": "../../../ceramic/tools/haxe.cmd",
+    "haxelib.executable": "../../../ceramic/tools/haxelib.cmd",
+    "editor.formatOnSave": true
 }

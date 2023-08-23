@@ -47,5 +47,11 @@
     "blockCurly": {
       "rightCurly": "after"
     }
+  },
+  "sameLine": {
+    "ifBody": "keep",
+    "ifElse": "next",
+    "elseIf": "next",
+    "expressionIf": "same"
   }
 }
