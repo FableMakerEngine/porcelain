@@ -122,9 +122,14 @@ class StoreMacro {
 
   public static function createStaticMethods(mutationFields: Array<Field>): Array<Field> {
     var newMethods: Array<Field> = [];
+    var classesHandled: Map<String, Bool> = [];
 
     for (field in mutationFields) {
       var cls = getClassFromKind(field.kind);
+      if (classesHandled.exists(cls.name)) {
+        Context.error('Cannot have more than one mutation class of the same type "${cls.name}"', field.pos);
+      }
+      classesHandled.set(cls.name, true);
       var clsFields = cls.statics.get();
       for (field in clsFields) {
         var fieldMeta = field.meta.get();
