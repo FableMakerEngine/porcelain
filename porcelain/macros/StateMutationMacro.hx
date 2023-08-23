@@ -1,4 +1,4 @@
-package;
+package porcelain.macros;
 
 import haxe.macro.Type;
 import haxe.macro.Context;
