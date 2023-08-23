@@ -57,9 +57,9 @@ class StoreMacro {
     }
   }
 
-  public static function getClassFromKind(kind) {
+  public static function getClassFromKind(kind): ClassType {
     var cls;
-    var getClsKind = (name: String) -> {
+    var getClsType = (name: String) -> {
       return switch Context.getType(name) {
         case TInst(t, params): t.get();
         case _: null;
@@ -69,12 +69,12 @@ class StoreMacro {
       case FVar(t, e):
         switch t {
           case TPath(p):
-            cls = getClsKind(p.name);
+            cls = getClsType(p.name);
           case _:
             if (e != null) {
               switch e.expr {
                 case ENew(t, params):
-                  cls = getClsKind(t.name);
+                  cls = getClsType(t.name);
                 case _:
               }
             }
@@ -90,7 +90,7 @@ class StoreMacro {
       case EConst(CIdent(s)):
         return s == 'true';
       case _:
-        null;
+        false;
     }
   }
 
