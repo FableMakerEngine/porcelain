@@ -24,10 +24,21 @@ class StateMutationMacro {
             for (arg in args) {
               switch arg.type {
                 case TPath(s):
+                  var arrayTypeName = null;
+                  if (s.name == 'Array') {
+                    var argType = s.params[0];
+                    switch argType {
+                      case TPType(TPath(p)):
+                        arrayTypeName = p.name;
+                      case _:
+                    }
+                  }
                   argsForMeta.push({
                     name: arg.name,
                     opt: arg.opt,
-                    typeName: s.name
+                    typeName: s.name,
+                    isArray: arrayTypeName != null,
+                    arrayType: arrayTypeName
                   });
                 case _:
               }

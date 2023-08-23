@@ -114,9 +114,23 @@ class StoreMacro {
               var typeField = t.find(i -> i.field == 'typeName');
               var nameField = t.find(i -> i.field == 'name');
               var optField = t.find(i -> i.field == 'opt');
+              var isArray = isExprTrue(t.find(i -> i.field == 'isArray').expr);
+              var arrType = null;
+
+              if (isArray) {
+                var arrTypeField = t.find(i -> i.field == 'arrayType');
+                var arrTypeName = extractStringFromExpr(arrTypeField.expr);
+                var arrParamType = Context.toComplexType(Context.getType(arrTypeName));
+                arrType = TPath({
+                  name: 'Array',
+                  pack: [],
+                  params: [TPType(arrParamType)]
+                });
+              }
               var typeName = extractStringFromExpr(typeField.expr);
+              var type = Context.toComplexType(Context.getType(typeName));
               exValues.push({
-                type: Context.toComplexType(Context.getType(typeName)),
+                type: isArray ? arrType : type,
                 opt: isExprTrue(optField.expr),
                 name: extractStringFromExpr(nameField.expr)
               });
