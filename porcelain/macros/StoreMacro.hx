@@ -1,4 +1,4 @@
-package;
+package porcelain.macros;
 
 import haxe.macro.Type;
 import haxe.macro.Context;
@@ -8,7 +8,7 @@ import haxe.macro.TypeTools;
 using Lambda;
 using StringTools;
 
-class TestMacro {
+class StoreMacro {
   public static var collectedFields: Map<String, Array<Field>> = [];
 
   macro public static function build(): Array<Field> {
