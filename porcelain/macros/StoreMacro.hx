@@ -58,18 +58,25 @@ class StoreMacro {
     }
   }
 
-  public static function getClassFromKind(kind): ClassType {
+  public static function getClass(field: Field): ClassType {
     var cls;
-    switch kind {
+    var getClassByName = (name) -> {
+      try {
+        TypeTools.getClass(Context.getType(name));
+      } catch (error) {
+        Context.fatalError('Cannot find class $name', field.pos);
+      }
+    }
+    switch field.kind {
       case FVar(t, e):
         switch t {
           case TPath(p):
-            cls = TypeTools.getClass(Context.getType(p.name));
+            cls = getClassByName(p.name);
           case _:
             if (e != null) {
               switch e.expr {
                 case ENew(t, params):
-                  cls = TypeTools.getClass(Context.getType(t.name));
+                  cls = getClassByName(t.name);
                 case _:
               }
             }
@@ -85,7 +92,7 @@ class StoreMacro {
     var classesHandled: Map<String, Bool> = [];
 
     for (field in mutationFields) {
-      var cls = getClassFromKind(field.kind);
+      var cls = getClass(field);
       if (classesHandled.exists(cls.name)) {
         Context.error('Cannot have more than one mutation class of the same type "${cls.name}"', field.pos);
       }
