@@ -121,7 +121,7 @@ class StoreMacro {
   }
 
   public static function createStaticMethods(mutationFields: Array<Field>): Array<Field> {
-    var funcsToCopy: Array<Field> = [];
+    var newMethods: Array<Field> = [];
 
     for (field in mutationFields) {
       var cls = getClassFromKind(field.kind);
@@ -140,12 +140,12 @@ class StoreMacro {
               access: [Access.APublic, Access.AStatic],
               pos: Context.currentPos()
             };
-            funcsToCopy.push(newMethod);
+            newMethods.push(newMethod);
           }
         }
       }
     }
-    return funcsToCopy;
+    return newMethods;
   }
   #end
 }
