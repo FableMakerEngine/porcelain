@@ -134,7 +134,7 @@ class StoreMacro {
       for (field in clsFields) {
         var fieldMeta = field.meta.get();
         for (meta in fieldMeta) {
-          if (meta.name == 'tempFieldData') {
+          if (meta.name == 'mutationFieldData') {
             var metaParams = meta.params;
             var fieldName = ExprTools.getValue(metaParams[0]);
             var fieldArgs = extractArgsFromObjectArrayExpr(metaParams[1]);

@@ -45,7 +45,7 @@ class StateMutationMacro {
             }
 
             lf.meta.push({
-              name: 'tempFieldData',
+              name: 'mutationFieldData',
               params: [macro $v{name}, macro $v{argsForMeta}],
               pos: lf.pos
             });
