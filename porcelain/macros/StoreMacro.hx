@@ -1,5 +1,6 @@
 package porcelain.macros;
 
+import haxe.macro.ExprTools;
 import haxe.macro.Type;
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -85,24 +86,6 @@ class StoreMacro {
     return cls;
   }
 
-  public static function isExprTrue(expr: Expr): Bool {
-    return switch expr.expr {
-      case EConst(CIdent(s)):
-        return s == 'true';
-      case _:
-        false;
-    }
-  }
-
-  public static function extractStringFromExpr(expr: Expr): String {
-    return switch expr.expr {
-      case EConst(CString(s, kind)):
-        s;
-      case _:
-        null;
-    }
-  }
-
   public static function extractArgsFromObjectArrayExpr(expr: Expr): Array<FunctionArg> {
     return switch expr.expr {
       case EArrayDecl(values):
@@ -114,12 +97,12 @@ class StoreMacro {
               var typeField = t.find(i -> i.field == 'typeName');
               var nameField = t.find(i -> i.field == 'name');
               var optField = t.find(i -> i.field == 'opt');
-              var isArray = isExprTrue(t.find(i -> i.field == 'isArray').expr);
+              var isArray = ExprTools.getValue(t.find(i -> i.field == 'isArray').expr);
               var arrType = null;
 
               if (isArray) {
                 var arrTypeField = t.find(i -> i.field == 'arrayType');
-                var arrTypeName = extractStringFromExpr(arrTypeField.expr);
+                var arrTypeName = ExprTools.getValue((arrTypeField.expr));
                 var arrParamType = Context.toComplexType(Context.getType(arrTypeName));
                 arrType = TPath({
                   name: 'Array',
@@ -127,12 +110,12 @@ class StoreMacro {
                   params: [TPType(arrParamType)]
                 });
               }
-              var typeName = extractStringFromExpr(typeField.expr);
+              var typeName = ExprTools.getValue(typeField.expr);
               var type = Context.toComplexType(Context.getType(typeName));
               exValues.push({
                 type: isArray ? arrType : type,
-                opt: isExprTrue(optField.expr),
-                name: extractStringFromExpr(nameField.expr)
+                opt: ExprTools.getValue(optField.expr),
+                name: ExprTools.getValue(nameField.expr)
               });
             case _:
           }
@@ -154,7 +137,7 @@ class StoreMacro {
         for (meta in fieldMeta) {
           if (meta.name == 'tempFieldData') {
             var metaParams = meta.params;
-            var fieldName = extractStringFromExpr(metaParams[0]);
+            var fieldName = ExprTools.getValue(metaParams[0]);
             var fieldArgs = extractArgsFromObjectArrayExpr(metaParams[1]);
             var func = createFunction(cls.name, fieldName, fieldArgs);
             var newMethod: Field = {
