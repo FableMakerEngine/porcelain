@@ -12,54 +12,21 @@ class StateMutationMacro {
   #if macro
   public static function build(): Array<Field> {
     var localFields = Context.getBuildFields();
+    var cls = Context.getLocalClass();
+    var className = cls.get().name;
+    var fieldsToCollect = [];
 
     for (lf in localFields) {
       switch lf.kind {
         case FFun(f):
           if (lf.access.contains(AStatic)) {
-            var name = lf.name;
-            var args: Array<FunctionArg> = f.args;
-            var argsForMeta = [];
-
-            for (arg in args) {
-              switch arg.type {
-                case TPath(s):
-                  var arrayTypeName = null;
-                  if (s.name == 'Array') {
-                    var argType = s.params[0];
-                    switch argType {
-                      case TPType(TPath(p)):
-                        arrayTypeName = p.name;
-                      case _:
-                    }
-                  }
-                  argsForMeta.push({
-                    name: arg.name,
-                    opt: arg.opt,
-                    typeName: s.name,
-                    isArray: arrayTypeName != null,
-                    arrayType: arrayTypeName
-                  });
-                case _:
-              }
-            }
-
-            lf.meta.push({
-              name: 'mutationFieldData',
-              params: [macro $v{name}, macro $v{argsForMeta}],
-              pos: lf.pos
-            });
-
-            lf.meta.push({
-              name: ':keep',
-              pos: lf.pos
-            });
+            fieldsToCollect.push(lf);
           }
         case _:
       }
     }
-
-    return localFields;
+    StoreMacro.collectedFields.set(className, fieldsToCollect);
+    return null;
   }
   #end
 }

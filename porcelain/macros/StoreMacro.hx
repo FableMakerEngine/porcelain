@@ -80,46 +80,6 @@ class StoreMacro {
     return cls;
   }
 
-  public static function extractArgsFromObjectArrayExpr(expr: Expr): Array<FunctionArg> {
-    return switch expr.expr {
-      case EArrayDecl(values):
-        var exValues = [];
-        for (value in values) {
-          switch value.expr {
-            case EObjectDecl(fields):
-              var t = fields.list();
-              var typeField = t.find(i -> i.field == 'typeName');
-              var nameField = t.find(i -> i.field == 'name');
-              var optField = t.find(i -> i.field == 'opt');
-              var isArray = ExprTools.getValue(t.find(i -> i.field == 'isArray').expr);
-              var arrType = null;
-
-              if (isArray) {
-                var arrTypeField = t.find(i -> i.field == 'arrayType');
-                var arrTypeName = ExprTools.getValue((arrTypeField.expr));
-                var arrParamType = Context.toComplexType(Context.getType(arrTypeName));
-                arrType = TPath({
-                  name: 'Array',
-                  pack: [],
-                  params: [TPType(arrParamType)]
-                });
-              }
-              var typeName = ExprTools.getValue(typeField.expr);
-              var type = Context.toComplexType(Context.getType(typeName));
-              exValues.push({
-                type: isArray ? arrType : type,
-                opt: ExprTools.getValue(optField.expr),
-                name: ExprTools.getValue(nameField.expr)
-              });
-            case _:
-          }
-        }
-        exValues;
-      case _:
-        null;
-    }
-  }
-
   public static function createStaticMethods(mutationFields: Array<Field>): Array<Field> {
     var newMethods: Array<Field> = [];
     var classesHandled: Map<String, Bool> = [];
@@ -130,24 +90,17 @@ class StoreMacro {
         Context.error('Cannot have more than one mutation class of the same type "${cls.name}"', field.pos);
       }
       classesHandled.set(cls.name, true);
-      var clsFields = cls.statics.get();
+      var clsFields = collectedFields.get(cls.name);
       for (field in clsFields) {
-        var fieldMeta = field.meta.get();
-        for (meta in fieldMeta) {
-          if (meta.name == 'mutationFieldData') {
-            var metaParams = meta.params;
-            var fieldName = ExprTools.getValue(metaParams[0]);
-            var fieldArgs = extractArgsFromObjectArrayExpr(metaParams[1]);
-            var func = createFunction(cls.name, fieldName, fieldArgs);
-            var newMethod: Field = {
-              name: fieldName,
-              kind: FieldType.FFun(func),
-              access: [Access.APublic, Access.AStatic],
-              pos: Context.currentPos()
-            };
-            newMethods.push(newMethod);
-          }
-        }
+        // @TODO  do we want to reuse the same function or create custom which uses Reflect?
+        var fieldFunc = field.kind;
+        var newMethod: Field = {
+          name: field.name,
+          kind: field.kind,
+          access: [Access.APublic, Access.AStatic],
+          pos: Context.currentPos()
+        };
+        newMethods.push(newMethod);
       }
     }
     return newMethods;
