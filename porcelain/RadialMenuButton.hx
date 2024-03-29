@@ -23,9 +23,6 @@ class RadialMenuButton extends RoundedRect {
       });
     }
 
-    onPointerOver(this, handlePointerOver);
-    onPointerOut(this, handlePointerOut);
-
     createLabel(label);
   }
 
@@ -81,13 +78,5 @@ class RadialMenuButton extends RoundedRect {
   override function set_height(height: Float): Float {
     label.pos(width / 2, height / 2);
     return super.set_height(height);
-  }
-
-  function handlePointerOver(info: TouchInfo) {
-    select();
-  }
-
-  function handlePointerOut(info: TouchInfo) {
-    deselect();
   }
 }
