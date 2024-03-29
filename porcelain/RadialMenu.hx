@@ -42,10 +42,12 @@ class RadialMenu extends Visual implements Observable {
     }
   }
 
-  public function addButton(label: String, callback: Void->Void): Void {
+  public function addButton(label: String, callback: Void->Void): RadialMenuButton {
     var button = new RadialMenuButton(label, callback);
     buttons.push(button);
     add(button);
+
+    return button;
   }
 
   function createCenterCircle(): Void {
