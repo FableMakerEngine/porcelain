@@ -7,6 +7,8 @@ import ceramic.RoundedRect;
 
 class RadialMenuButton extends RoundedRect {
   public var label: Text;
+  public var highlighted: Bool = false;
+  public var selected: Bool = false;
 
   @event public function click(info: TouchInfo) {};
 
@@ -38,13 +40,28 @@ class RadialMenuButton extends RoundedRect {
   }
 
   public function select() {
-    color = Color.fromRGB(50, 50, 50);
-    size(width + 10, height + 10);
+    if (highlighted || selected) {
+      return;
+    }
+    selected = true;
+    color = Color.fromRGB(100, 100, 100);
+    scale(1.2, 1.2);
   }
 
   public function deselect() {
-    color = Color.fromRGB(34, 34, 34);
-    size(width - 10, height - 10);
+    if (selected) {
+      color = Color.fromRGB(15, 15, 15);
+      selected = false;
+      scale(1, 1);
+    }
+  }
+
+  public function highlight() {
+    if (highlighted) {
+      return;
+    }
+    color = Color.fromRGB(38, 133, 178);
+    highlighted = true;
   }
 
   override function set_width(width: Float): Float {
