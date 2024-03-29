@@ -27,11 +27,19 @@ class RadialMenu extends Visual implements Observable {
     buttons = [];
     App.app.screen.onPointerMove(this, handlePointerMove);
     onSelectedButtonIndexChange(this, selectedButtonIndexChanged);
+    createCenterCircle();
+    createMouseArc();
+    visible = false;
   }
 
-  public function show() {}
+  public function show() {
+    visible = true;
+    animateButtons();
+  }
 
-  public function hide() {}
+  public function hide() {
+    visible = false;
+  }
 
   public function selectedButtonIndexChanged(selectedIndex: Int, prev: Int) {
     if (buttons[prev] != null) {
@@ -44,6 +52,7 @@ class RadialMenu extends Visual implements Observable {
 
   public function addButton(label: String, callback: Void->Void): RadialMenuButton {
     var button = new RadialMenuButton(label, callback);
+    button.anchor(0.5, 0.5);
     buttons.push(button);
     add(button);
 
@@ -76,25 +85,30 @@ class RadialMenu extends Visual implements Observable {
     add(centerMouseArc);
   }
 
-  public function layoutButtons(): Void {
+  public function animateButtons(): Void {
     var centerX: Float = width / 2;
     var centerY: Float = height / 2;
     var radius: Float = Math.min(width, height) / 2 - 20;
-
     var angleStep: Float = 2 * Math.PI / buttons.length;
     var currentAngle: Float = 0;
 
-    for (button in buttons) {
-      var x: Float = centerX + radius * Math.cos(currentAngle);
-      var y: Float = centerY + radius * Math.sin(currentAngle);
+    for (i in 0...buttons.length) {
+      var button = buttons[i];
+      var finalX: Float = centerX + radius * Math.cos(currentAngle);
+      var finalY: Float = centerY + radius * Math.sin(currentAngle);
 
-      button.pos(x - button.width / 2, y - button.height / 2);
+      button.tween(QUAD_EASE_IN_OUT, 0.1, centerX, finalX, (value, time) -> {
+        button.x = value;
+      });
+      button.tween(QUAD_EASE_IN_OUT, 0.1, centerY, finalY, (value, time) -> {
+        button.y = value;
+      });
 
       currentAngle += angleStep;
     }
 
-    createCenterCircle();
-    createMouseArc();
+    centerCircle.pos(centerX, centerY);
+    centerMouseArc.pos(centerX, centerY);
   }
 
   function handlePointerMove(info: TouchInfo) {
