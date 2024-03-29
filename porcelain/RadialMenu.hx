@@ -86,8 +86,8 @@ class RadialMenu extends Visual implements Observable {
   }
 
   public function animateButtons(): Void {
-    var centerX: Float = width / 2;
-    var centerY: Float = height / 2;
+    var centerX: Float = width / 2 - 7.5;
+    var centerY: Float = height / 2 - 7.5;
     var radius: Float = Math.min(width, height) / 2 - 20;
     var angleStep: Float = 2 * Math.PI / buttons.length;
     var currentAngle: Float = 0;
@@ -115,20 +115,30 @@ class RadialMenu extends Visual implements Observable {
     if (centerCircle == null || centerMouseArc == null) {
       return;
     }
-    var mouseX: Float = info.x - App.app.screen.width / 2;
-    var mouseY: Float = info.y - App.app.screen.height / 2;
+
+    var mouseX: Float = info.x - x;
+    var mouseY: Float = info.y - y;
     var angle = Math.atan2(mouseY, mouseX) * 180 / Math.PI;
 
-    var lineLength: Float = centerMouseArc.radius * 8;
+    var lineLength: Float = centerMouseArc.radius * 15;
     var lineEndX: Float = centerMouseArc.x + lineLength * Math.cos(angle * Math.PI / 180);
     var lineEndY: Float = centerMouseArc.y + lineLength * Math.sin(angle * Math.PI / 180);
 
-    // Determine the selected button
-    var lineAngle: Float = Math.atan2(lineEndY - centerMouseArc.y, lineEndX - centerMouseArc.x) * 180 / Math.PI;
-    lineAngle = (lineAngle + 360) % 360;
-    var angleStep: Float = 360 / buttons.length;
-    var tolerance: Float = angleStep * 0.5;
-    selectedButtonIndex = Math.floor((lineAngle + tolerance) / angleStep) % buttons.length;
+    var dx: Float = info.x - x;
+    var dy: Float = info.y - y;
+    var distance: Float = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance <= centerCircle.radius + 4) {
+      selectedButtonIndex = -1;
+      centerMouseArc.visible = false;
+    } else {
+      centerMouseArc.visible = true;
+      var lineAngle: Float = Math.atan2(lineEndY - centerMouseArc.y, lineEndX - centerMouseArc.x) * 180 / Math.PI;
+      lineAngle = (lineAngle + 360) % 360;
+      var angleStep: Float = 360 / buttons.length;
+      var tolerance: Float = angleStep * 0.5;
+      selectedButtonIndex = Math.floor((lineAngle + tolerance) / angleStep) % buttons.length;
+    }
 
     centerMouseArc.rotation = angle + 45;
   }
