@@ -10,21 +10,31 @@ class RadialMenuButton extends RoundedRect {
   public var highlighted: Bool = false;
   public var selected: Bool = false;
 
-  @event public function click(info: TouchInfo) {};
+  @event public function action(button: RadialMenuButton) {};
 
-  public function new(label: String, onClick: Void->Void) {
+  public function new(label: String, action: RadialMenuButton->Void) {
     super();
     radius(8);
     color = Color.fromRGB(34, 34, 34);
 
-    onPointerUp(this, (info: TouchInfo) -> {
-      emitClick(info);
-    });
+    if (action != null) {
+      onAction(this, (this) -> {
+        handleAction(action);
+      });
+    }
 
     onPointerOver(this, handlePointerOver);
     onPointerOut(this, handlePointerOut);
 
     createLabel(label);
+  }
+
+  function handleAction(action) {
+    if (action != null) {
+      action(this);
+    }
+    deselect();
+    highlight();
   }
 
   function createLabel(?text: String) {

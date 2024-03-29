@@ -39,6 +39,12 @@ class RadialMenu extends Visual implements Observable {
 
   public function hide() {
     visible = false;
+    if (selectedButtonIndex != -1 && buttons[selectedButtonIndex] != null) {
+      for (button in buttons) {
+        button.highlighted = false;
+      }
+      buttons[selectedButtonIndex].emitAction(buttons[selectedButtonIndex]);
+    }
   }
 
   public function selectedButtonIndexChanged(selectedIndex: Int, prev: Int) {
@@ -50,7 +56,7 @@ class RadialMenu extends Visual implements Observable {
     }
   }
 
-  public function addButton(label: String, callback: Void->Void): RadialMenuButton {
+  public function addButton(label: String, callback: RadialMenuButton->Void): RadialMenuButton {
     var button = new RadialMenuButton(label, callback);
     button.anchor(0.5, 0.5);
     buttons.push(button);
