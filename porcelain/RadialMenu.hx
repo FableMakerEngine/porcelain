@@ -41,6 +41,7 @@ class RadialMenu extends Visual implements Observable {
     visible = false;
     if (selectedButtonIndex != -1 && buttons[selectedButtonIndex] != null) {
       for (button in buttons) {
+        button.deselect();
         button.highlighted = false;
       }
       buttons[selectedButtonIndex].emitAction(buttons[selectedButtonIndex]);
@@ -88,12 +89,13 @@ class RadialMenu extends Visual implements Observable {
     centerMouseArc.color = Color.ORANGE;
     centerMouseArc.anchor(0.5, 0.5);
     centerMouseArc.pos(width / 2 - 7.5, height / 2 - 7.5);
+    centerMouseArc.visible = false;
     add(centerMouseArc);
   }
 
   public function animateButtons(): Void {
-    var centerX: Float = width / 2 - 7.5;
-    var centerY: Float = height / 2 - 7.5;
+    var centerX: Float = width / 2;
+    var centerY: Float = height / 2;
     var radius: Float = Math.min(width, height) / 2 - 20;
     var angleStep: Float = 2 * Math.PI / buttons.length;
     var currentAngle: Float = 0;
@@ -118,7 +120,7 @@ class RadialMenu extends Visual implements Observable {
   }
 
   function handlePointerMove(info: TouchInfo) {
-    if (centerCircle == null || centerMouseArc == null) {
+    if (centerCircle == null || centerMouseArc == null || visible == false) {
       return;
     }
 
