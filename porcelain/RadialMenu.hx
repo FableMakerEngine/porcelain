@@ -34,7 +34,6 @@ class RadialMenu extends Visual implements Observable {
   public function hide() {}
 
   public function selectedButtonIndexChanged(selectedIndex: Int, prev: Int) {
-    trace(selectedIndex);
     if (buttons[prev] != null) {
       buttons[prev].deselect();
     }
