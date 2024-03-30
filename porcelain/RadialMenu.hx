@@ -112,6 +112,10 @@ class RadialMenu extends Visual implements Observable {
         button.y = value;
       });
 
+      if (button.shortcutText.content != null) {
+        var shortcutNumber = i + 1;
+        button.shortcutText.content = '$shortcutNumber';
+      }
       currentAngle += angleStep;
     }
 

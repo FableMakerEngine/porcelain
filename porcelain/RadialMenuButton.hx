@@ -1,5 +1,7 @@
 package porcelain;
 
+import ceramic.Texture;
+import ceramic.Quad;
 import ceramic.Color;
 import ceramic.TouchInfo;
 import ceramic.Text;
@@ -9,6 +11,9 @@ class RadialMenuButton extends RoundedRect {
   public var label: Text;
   public var highlighted(default, set): Bool = false;
   public var selected: Bool = false;
+  public var shortcutText: Text;
+
+  var icon: Quad;
 
   @event public function action(button: RadialMenuButton) {};
 
@@ -23,7 +28,13 @@ class RadialMenuButton extends RoundedRect {
       });
     }
 
+    if (entry.icon != null) {
+      createIcon(entry.icon);
+    }
+    size(120, 40);
     createLabel(entry.label);
+    createShortcutText();
+    size(label.width + shortcutText.width + 15, label.height + 15);
   }
 
   function handleAction(action) {
@@ -38,10 +49,23 @@ class RadialMenuButton extends RoundedRect {
     if (text != null) {
       label.content = text;
     }
-    if (width == 0 || height == 0) {
-      size(label.width + 15, label.height + 15);
-    }
     add(label);
+  }
+
+  function createShortcutText() {
+    shortcutText = new Text();
+    shortcutText.anchor(0.5, 0.5);
+    shortcutText.pointSize = shortcutText.pointSize - 3;
+    shortcutText.pos(width - (shortcutText.width + 10), label.height);
+    add(shortcutText);
+  }
+
+  function createIcon(iconTexture: Texture) {
+    icon = new Quad();
+    icon.texture = iconTexture /*  */;
+    icon.anchor(0.5, 0.5);
+    // icon.color = Color.fromRGB(15, 15, 15);
+    add(icon);
   }
 
   public function select() {
@@ -71,12 +95,22 @@ class RadialMenuButton extends RoundedRect {
   }
 
   override function set_width(width: Float): Float {
-    label.pos(width / 2, height / 2);
+    if (width < 120) {
+      width = 120;
+    }
+    if (label != null) {
+      label.pos(width / 2, height / 2);
+    }
     return super.set_width(width);
   }
 
   override function set_height(height: Float): Float {
-    label.pos(width / 2, height / 2);
+    if (height < 40) {
+      height = 40;
+    }
+    if (label != null) {
+      label.pos(width / 2, height / 2);
+    }
     return super.set_height(height);
   }
 }
