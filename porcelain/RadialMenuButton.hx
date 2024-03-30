@@ -33,7 +33,7 @@ class RadialMenuButton extends RoundedRect {
     }
     size(120, 40);
     createLabel(entry.label);
-    createShortcutText();
+    createShortcutText(entry.shortcutNumber);
     size(label.width + shortcutText.width + 15, label.height + 15);
   }
 
@@ -52,8 +52,9 @@ class RadialMenuButton extends RoundedRect {
     add(label);
   }
 
-  function createShortcutText() {
+  function createShortcutText(number: Int) {
     shortcutText = new Text();
+    shortcutText.content = '$number';
     shortcutText.anchor(0.5, 0.5);
     shortcutText.pointSize = shortcutText.pointSize - 3;
     shortcutText.pos(width - (shortcutText.width + 10), label.height);
