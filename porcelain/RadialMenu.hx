@@ -29,10 +29,28 @@ class RadialMenu extends Visual implements Observable {
   var label: Text;
   var inputMap: InputMap<ShortcutInput>;
 
+  public var arcColor(default, set): Color = Color.fromRGB(100, 100, 100);
+  public var arcHighlightColor(default, set): Color = Color.fromRGB(100, 100, 100);
+  public var easeInDuration(default, set): Float = 0.2;
+
+  public var options(default, null): RadialMenuOptions;
+
   @observe var selectedButtonIndex: Int = -1;
 
-  public function new() {
+  public function new(?options: RadialMenuOptions) {
     super();
+    if (options != null) {
+      this.options = options;
+      if (options.arcColor != null) {
+        arcColor = options.arcColor;
+      }
+      if (options.arcHighlightColor != null) {
+        arcHighlightColor = options.arcHighlightColor;
+      }
+      if (options.easeInDuration != null) {
+        easeInDuration = options.easeInDuration;
+      }
+    }
     anchor(0.5, 0.5);
     buttons = [];
     App.app.screen.onPointerMove(this, handlePointerMove);
@@ -42,6 +60,24 @@ class RadialMenu extends Visual implements Observable {
     createCenterCircle();
     createMouseArc();
     visible = false;
+  }
+
+  function set_arcColor(color: Color) {
+    if (centerCircle != null) {
+      centerCircle.color = color;
+    }
+    return arcColor = color;
+  }
+
+  function set_arcHighlightColor(color: Color) {
+    if (centerMouseArc != null) {
+      centerMouseArc.color = color;
+    }
+    return arcHighlightColor = color;
+  }
+
+  function set_easeInDuration(duration: Float) {
+    return easeInDuration = duration;
   }
 
   public function show() {
@@ -86,6 +122,17 @@ class RadialMenu extends Visual implements Observable {
 
   public function addButton(entry: RadialMenuEntry): RadialMenuButton {
     var button = new RadialMenuButton(entry);
+    if (options != null) {
+      if (options.buttonColor != null) {
+        button.baseColor = options.buttonColor;
+      }
+      if (options.buttonHighlightColor != null) {
+        button.highlightColor = options.buttonHighlightColor;
+      }
+      if (options.buttonSelectedColor != null) {
+        button.selectedColor = options.buttonSelectedColor;
+      }
+    }
     button.anchor(0.5, 0.5);
     buttons.push(button);
     add(button);
@@ -100,7 +147,7 @@ class RadialMenu extends Visual implements Observable {
     centerCircle.radius = 15;
     centerCircle.borderPosition = OUTSIDE;
     centerCircle.thickness = 6;
-    centerCircle.color = Color.GRAY;
+    centerCircle.color = arcColor;
     centerCircle.anchor(0.5, 0.5);
     centerCircle.pos(width / 2 - 7.5, height / 2 - 7.5);
     add(centerCircle);
@@ -113,7 +160,7 @@ class RadialMenu extends Visual implements Observable {
     centerMouseArc.radius = 15;
     centerMouseArc.borderPosition = OUTSIDE;
     centerMouseArc.thickness = 6;
-    centerMouseArc.color = Color.ORANGE;
+    centerMouseArc.color = arcHighlightColor;
     centerMouseArc.anchor(0.5, 0.5);
     centerMouseArc.pos(width / 2 - 7.5, height / 2 - 7.5);
     centerMouseArc.visible = false;
@@ -132,10 +179,10 @@ class RadialMenu extends Visual implements Observable {
       var finalX: Float = centerX + radius * Math.cos(currentAngle);
       var finalY: Float = centerY + radius * Math.sin(currentAngle);
 
-      button.tween(QUAD_EASE_IN_OUT, 0.1, centerX, finalX, (value, time) -> {
+      button.tween(QUAD_EASE_IN_OUT, easeInDuration, centerX, finalX, (value, time) -> {
         button.x = value;
       });
-      button.tween(QUAD_EASE_IN_OUT, 0.1, centerY, finalY, (value, time) -> {
+      button.tween(QUAD_EASE_IN_OUT, easeInDuration, centerY, finalY, (value, time) -> {
         button.y = value;
       });
 

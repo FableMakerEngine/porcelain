@@ -14,6 +14,13 @@ class RadialMenuButton extends RoundedRect {
   public var fontSize: Int = 18;
   public var entryData(default, null): RadialMenuEntry;
 
+  @:allow(porcelain.RadialMenu)
+  var baseColor(default, set): Color = Color.fromRGB(20, 20, 20);
+  @:allow(porcelain.RadialMenu)
+  var selectedColor(default, set): Color = Color.fromRGB(100, 100, 100);
+  @:allow(porcelain.RadialMenu)
+  var highlightColor(default, set): Color = Color.fromRGB(38, 133, 178);
+
   var padding: Int = 35;
   var paddingHeight: Int = 20;
   var shortcutNumberSpacing: Int = 25;
@@ -85,13 +92,13 @@ class RadialMenuButton extends RoundedRect {
       return;
     }
     selected = true;
-    color = Color.fromRGB(100, 100, 100);
+    color = selectedColor;
     scale(1.2, 1.2);
   }
 
   public function deselect() {
     if (selected) {
-      color = Color.fromRGB(15, 15, 15);
+      color = baseColor;
       selected = false;
       scale(1, 1);
     }
@@ -99,11 +106,33 @@ class RadialMenuButton extends RoundedRect {
 
   public function set_highlighted(value: Bool) {
     if (value) {
-      color = Color.fromRGB(38, 133, 178);
+      color = highlightColor;
     } else {
-      color = Color.fromRGB(15, 15, 15);
+      color = baseColor;
     }
     return highlighted = value;
+  }
+
+  public function set_baseColor(color: Color) {
+    if (color == baseColor) {
+      return this.color;
+    }
+    baseColor = color;
+    return this.color = color;
+  }
+
+  public function set_selectedColor(color: Color) {
+    if (color == selectedColor) {
+      return selectedColor;
+    }
+    return selectedColor = color;
+  }
+
+  public function set_highlightColor(color: Color) {
+    if (color == highlightColor) {
+      return highlightColor;
+    }
+    return highlightColor = color;
   }
 
   override function set_width(width: Float): Float {
