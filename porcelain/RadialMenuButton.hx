@@ -3,7 +3,6 @@ package porcelain;
 import ceramic.Texture;
 import ceramic.Quad;
 import ceramic.Color;
-import ceramic.TouchInfo;
 import ceramic.Text;
 import ceramic.RoundedRect;
 

@@ -1,17 +1,12 @@
 package porcelain;
 
-import ceramic.Transform;
-import ceramic.Line;
 import tracker.Observable;
-import ceramic.AlphaColor;
 import ceramic.App;
-import ceramic.Quad;
 import ceramic.Arc;
 import ceramic.Color;
 import ceramic.Text;
 import ceramic.TouchInfo;
 import ceramic.Visual;
-import ceramic.RoundedRect;
 
 class RadialMenu extends Visual implements Observable {
   var buttons: Array<RadialMenuButton>;
