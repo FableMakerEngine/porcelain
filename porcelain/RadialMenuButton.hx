@@ -12,6 +12,12 @@ class RadialMenuButton extends RoundedRect {
   public var highlighted(default, set): Bool = false;
   public var selected: Bool = false;
   public var shortcutText: Text;
+  public var fontSize: Int = 18;
+
+  var padding: Int = 35;
+  var paddingHeight: Int = 20;
+  var shortcutNumberSpacing: Int = 25;
+  var textWidth: Float = 0;
 
   var icon: Quad;
 
@@ -34,7 +40,9 @@ class RadialMenuButton extends RoundedRect {
     size(120, 40);
     createLabel(entry.label);
     createShortcutText(entry.shortcutNumber);
-    size(label.width + shortcutText.width + 15, label.height + 15);
+
+    textWidth = label.width + shortcutText.width;
+    size(textWidth + padding + shortcutNumberSpacing, label.height + paddingHeight);
   }
 
   function handleAction(action) {
@@ -45,6 +53,7 @@ class RadialMenuButton extends RoundedRect {
 
   function createLabel(?text: String) {
     label = new Text();
+    label.pointSize = fontSize;
     label.anchor(0.5, 0.5);
     if (text != null) {
       label.content = text;
@@ -56,8 +65,9 @@ class RadialMenuButton extends RoundedRect {
     shortcutText = new Text();
     shortcutText.content = '$number';
     shortcutText.anchor(0.5, 0.5);
-    shortcutText.pointSize = shortcutText.pointSize - 3;
-    shortcutText.pos(width - (shortcutText.width + 10), label.height);
+    shortcutText.pointSize = fontSize - 4;
+    shortcutText.x = width - (shortcutText.width + 10);
+    shortcutText.color = Color.fromRGB(200, 200, 200);
     add(shortcutText);
   }
 
@@ -96,21 +106,17 @@ class RadialMenuButton extends RoundedRect {
   }
 
   override function set_width(width: Float): Float {
-    if (width < 120) {
-      width = 120;
-    }
     if (label != null) {
       label.pos(width / 2, height / 2);
+      shortcutText.pos(width - (shortcutText.width + 5), height / 2);
     }
     return super.set_width(width);
   }
 
   override function set_height(height: Float): Float {
-    if (height < 40) {
-      height = 40;
-    }
     if (label != null) {
       label.pos(width / 2, height / 2);
+      shortcutText.pos(width - (shortcutText.width + 5), height / 2);
     }
     return super.set_height(height);
   }
