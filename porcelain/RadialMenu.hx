@@ -150,10 +150,10 @@ class RadialMenu extends Visual implements Observable {
     if (visible == false) {
       return;
     }
-    trace('hjere');
+
     for (button in buttons) {
       if (button.entryData.shortcutNumber == key) {
-        selectedButtonIndex = buttons.indexOf(button);
+        selectedButtonIndex = -1;
         button.emitAction(button);
         hide(); /*  */
       }
