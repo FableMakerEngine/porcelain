@@ -10,6 +10,7 @@ import ceramic.TouchInfo;
 import ceramic.Visual;
 
 enum abstract ShortcutInput(Int) from Int to Int {
+  var ZERO = 0;
   var ONE = 1;
   var TWO = 2;
   var THREE = 3;
@@ -19,7 +20,6 @@ enum abstract ShortcutInput(Int) from Int to Int {
   var SEVEN = 7;
   var EIGHT = 8;
   var NINE = 9;
-  var TEN = 0;
 }
 
 class RadialMenu extends Visual implements Observable {
@@ -79,7 +79,7 @@ class RadialMenu extends Visual implements Observable {
     inputMap.bindKeyCode(ShortcutInput.SEVEN, KEY_7);
     inputMap.bindKeyCode(ShortcutInput.EIGHT, KEY_8);
     inputMap.bindKeyCode(ShortcutInput.NINE, KEY_9);
-    inputMap.bindKeyCode(ShortcutInput.TEN, KEY_0);
+    inputMap.bindKeyCode(ShortcutInput.ZERO, KEY_0);
 
     inputMap.onKeyDown(this, handleKeyDown);
   }
