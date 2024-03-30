@@ -12,18 +12,18 @@ class RadialMenuButton extends RoundedRect {
 
   @event public function action(button: RadialMenuButton) {};
 
-  public function new(label: String, action: RadialMenuButton->Void) {
+  public function new(entry: RadialMenuEntry) {
     super();
     radius(8);
     color = Color.fromRGB(34, 34, 34);
 
-    if (action != null) {
+    if (entry.action != null) {
       onAction(this, (this) -> {
-        handleAction(action);
+        handleAction(entry.action);
       });
     }
 
-    createLabel(label);
+    createLabel(entry.label);
   }
 
   function handleAction(action) {
