@@ -12,6 +12,7 @@ class RadialMenuButton extends RoundedRect {
   public var selected: Bool = false;
   public var shortcutText: Text;
   public var fontSize: Int = 18;
+  public var entryData(default, null): RadialMenuEntry;
 
   var padding: Int = 35;
   var paddingHeight: Int = 20;
@@ -24,6 +25,7 @@ class RadialMenuButton extends RoundedRect {
 
   public function new(entry: RadialMenuEntry) {
     super();
+    entryData = entry;
     radius(8);
     color = Color.fromRGB(34, 34, 34);
 

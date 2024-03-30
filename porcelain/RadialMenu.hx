@@ -1,5 +1,6 @@
 package porcelain;
 
+import ceramic.InputMap;
 import tracker.Observable;
 import ceramic.App;
 import ceramic.Arc;
@@ -8,11 +9,25 @@ import ceramic.Text;
 import ceramic.TouchInfo;
 import ceramic.Visual;
 
+enum abstract ShortcutInput(Int) from Int to Int {
+  var ONE = 1;
+  var TWO = 2;
+  var THREE = 3;
+  var FOUR = 4;
+  var FIVE = 5;
+  var SIX = 6;
+  var SEVEN = 7;
+  var EIGHT = 8;
+  var NINE = 9;
+  var TEN = 0;
+}
+
 class RadialMenu extends Visual implements Observable {
   var buttons: Array<RadialMenuButton>;
   var centerCircle: Arc;
   var centerMouseArc: Arc;
   var label: Text;
+  var inputMap: InputMap<ShortcutInput>;
 
   @observe var selectedButtonIndex: Int = -1;
 
@@ -22,6 +37,8 @@ class RadialMenu extends Visual implements Observable {
     buttons = [];
     App.app.screen.onPointerMove(this, handlePointerMove);
     onSelectedButtonIndexChange(this, selectedButtonIndexChanged);
+    inputMap = new InputMap();
+    bindInputs();
     createCenterCircle();
     createMouseArc();
     visible = false;
@@ -50,6 +67,21 @@ class RadialMenu extends Visual implements Observable {
     if (buttons[selectedButtonIndex] != null) {
       buttons[selectedButtonIndex].select();
     }
+  }
+
+  public function bindInputs() {
+    inputMap.bindKeyCode(ShortcutInput.ONE, KEY_1);
+    inputMap.bindKeyCode(ShortcutInput.TWO, KEY_2);
+    inputMap.bindKeyCode(ShortcutInput.THREE, KEY_3);
+    inputMap.bindKeyCode(ShortcutInput.FOUR, KEY_4);
+    inputMap.bindKeyCode(ShortcutInput.FIVE, KEY_5);
+    inputMap.bindKeyCode(ShortcutInput.SIX, KEY_6);
+    inputMap.bindKeyCode(ShortcutInput.SEVEN, KEY_7);
+    inputMap.bindKeyCode(ShortcutInput.EIGHT, KEY_8);
+    inputMap.bindKeyCode(ShortcutInput.NINE, KEY_9);
+    inputMap.bindKeyCode(ShortcutInput.TEN, KEY_0);
+
+    inputMap.onKeyDown(this, handleKeyDown);
   }
 
   public function addButton(entry: RadialMenuEntry): RadialMenuButton {
@@ -112,6 +144,20 @@ class RadialMenu extends Visual implements Observable {
 
     centerCircle.pos(centerX, centerY);
     centerMouseArc.pos(centerX, centerY);
+  }
+
+  function handleKeyDown(key: ShortcutInput) {
+    if (visible == false) {
+      return;
+    }
+    trace('hjere');
+    for (button in buttons) {
+      if (button.entryData.shortcutNumber == key) {
+        selectedButtonIndex = buttons.indexOf(button);
+        button.emitAction(button);
+        hide(); /*  */
+      }
+    }
   }
 
   function handlePointerMove(info: TouchInfo) {
