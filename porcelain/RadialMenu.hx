@@ -1,5 +1,6 @@
 package porcelain;
 
+import ceramic.Point;
 import ceramic.InputMap;
 import tracker.Observable;
 import ceramic.App;
@@ -212,16 +213,22 @@ class RadialMenu extends Visual implements Observable {
       return;
     }
 
-    var mouseX: Float = info.x - x;
-    var mouseY: Float = info.y - y;
+    var relativePos = new Point(x, y);
+
+    if (parent != null) {
+      parent.visualToScreen(x, y, relativePos);
+    }
+
+    var mouseX: Float = info.x - relativePos.x;
+    var mouseY: Float = info.y - relativePos.y;
     var angle = Math.atan2(mouseY, mouseX) * 180 / Math.PI;
 
     var lineLength: Float = centerMouseArc.radius * 15;
     var lineEndX: Float = centerMouseArc.x + lineLength * Math.cos(angle * Math.PI / 180);
     var lineEndY: Float = centerMouseArc.y + lineLength * Math.sin(angle * Math.PI / 180);
 
-    var dx: Float = info.x - x;
-    var dy: Float = info.y - y;
+    var dx: Float = info.x - relativePos.x;
+    var dy: Float = info.y - relativePos.y;
     var distance: Float = Math.sqrt(dx * dx + dy * dy);
 
     if (distance <= centerCircle.radius + 4) {
