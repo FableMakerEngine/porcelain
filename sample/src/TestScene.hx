@@ -7,7 +7,6 @@ using ceramic.TilemapPlugin;
 
 class TestScene extends ceramic.Scene {
   private var text: Text;
-  private var rect: porcelain.Rect;
   private var tileemap: Tilemap;
 
   public function new() {
@@ -21,7 +20,6 @@ class TestScene extends ceramic.Scene {
 
   public override function create() {
     createText();
-    createRect();
     createTilemap();
   }
 
@@ -34,12 +32,6 @@ class TestScene extends ceramic.Scene {
     text.pos(screen.width * 0.5, screen.height * 0.5);
     text.depth = 10;
     add(text);
-  }
-
-  private function createRect() {
-    rect = new porcelain.Rect(50, 50, 4);
-    rect.depth = 10;
-    add(rect);
   }
 
   private function createTilemap() {
