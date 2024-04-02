@@ -57,7 +57,7 @@ app:
     #- script
 
   libs:
-    - porcelain
+    - porcelain: path:../
     # - somelib: someversion
     #- somelib: git:https://github.com/somelibauthor/somelib.git
 

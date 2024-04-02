@@ -32,11 +32,10 @@ haxelib run ceramic setup
 haxelib run ceramic setup -cwd path/to/porcelain/libs/ceramic
 ```
 
-### Install dev Porcelain
-To be able to use porcelain in the Sample app we must install porcelain locally
+### Install Required Libs
 
 ```sh
-`haxelib dev porcelain ./
+ceramic libs
 ```
 
 ### Test The Sample
