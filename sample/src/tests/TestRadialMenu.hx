@@ -22,6 +22,8 @@ class TestRadialMenu extends TestScene {
   }
 
   public override function create() {
+    super.create();
+    titleText.content = "Radial Menu (Click to activate)";
     createRadialMenu();
   }
 

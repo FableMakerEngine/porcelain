@@ -6,7 +6,6 @@ import ceramic.Text;
 using ceramic.TilemapPlugin;
 
 class TestCeramic extends TestScene {
-  private var text: Text;
   private var tileemap: Tilemap;
 
   public function new() {
@@ -19,19 +18,9 @@ class TestCeramic extends TestScene {
   }
 
   public override function create() {
-    createText();
+    super.create();
+    titleText.content = "Hello World!";
     createTilemap();
-  }
-
-  private function createText() {
-    text = new Text();
-    text.content = "Hello World!";
-    text.color = ceramic.Color.WHITE;
-    text.pointSize = 52;
-    text.anchor(0.5, 0.5);
-    text.pos(screen.width * 0.5, screen.height * 0.5);
-    text.depth = 10;
-    add(text);
   }
 
   private function createTilemap() {
@@ -43,13 +32,15 @@ class TestCeramic extends TestScene {
   }
 
   public override function resize(width: Float, height: Float) {
-    text.pos(width * 0.5, height * 0.5);
+    if (titleText != null) {
+      titleText.pos(width * 0.5, height * 0.5);
+    }
   }
 
   public override function update(dt: Float) {
     super.update(dt);
-    if (text != null) {
-      text.rotation += 25 * dt;
+    if (titleText != null) {
+      titleText.rotation += 25 * dt;
     }
   }
 }
