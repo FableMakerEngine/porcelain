@@ -48,6 +48,8 @@ class TestCeramic extends TestScene {
 
   public override function update(dt: Float) {
     super.update(dt);
-    text.rotation += 25 * dt;
+    if (text != null) {
+      text.rotation += 25 * dt;
+    }
   }
 }
