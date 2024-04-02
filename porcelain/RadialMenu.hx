@@ -31,10 +31,12 @@ class RadialMenu extends Visual implements Observable {
   var inputMap: InputMap<ShortcutInput>;
 
   public var arcColor(default, set): Color = Color.fromRGB(100, 100, 100);
-  public var arcHighlightColor(default, set): Color = Color.fromRGB(100, 100, 100);
+  public var arcHighlightColor(default, set): Color = Color.ORANGE;
   public var easeInDuration(default, set): Float = 0.2;
 
   public var options(default, null): RadialMenuOptions;
+
+  @observe public var menuItems: Array<RadialMenuEntry>;
 
   @observe var selectedButtonIndex: Int = -1;
 
@@ -56,6 +58,7 @@ class RadialMenu extends Visual implements Observable {
     buttons = [];
     App.app.screen.onPointerMove(this, handlePointerMove);
     onSelectedButtonIndexChange(this, selectedButtonIndexChanged);
+    onMenuItemsChange(this, menuItemsChanged);
     inputMap = new InputMap();
     bindInputs();
     createCenterCircle();
@@ -103,6 +106,18 @@ class RadialMenu extends Visual implements Observable {
     }
     if (buttons[selectedButtonIndex] != null) {
       buttons[selectedButtonIndex].select();
+    }
+  }
+
+  function menuItemsChanged(menuItems: Array<RadialMenuEntry>, prev: Array<RadialMenuEntry>) {
+    if (buttons != null) {
+      for (button in buttons) {
+        button.destroy();
+      }
+      buttons = [];
+    }
+    for (item in menuItems) {
+      addButton(item);
     }
   }
 
