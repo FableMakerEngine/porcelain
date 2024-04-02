@@ -5,7 +5,7 @@ import ceramic.Text;
 
 using ceramic.TilemapPlugin;
 
-class TestCeramic extends ceramic.Scene {
+class TestCeramic extends TestScene {
   private var text: Text;
   private var tileemap: Tilemap;
 
@@ -47,6 +47,7 @@ class TestCeramic extends ceramic.Scene {
   }
 
   public override function update(dt: Float) {
+    super.update(dt);
     text.rotation += 25 * dt;
   }
 }

@@ -12,7 +12,7 @@ class TestScene extends ceramic.Scene {
 
   public function new() {
     super();
-    testScenes = ['Ceramic', 'Radial Menu', 'Scene3', 'Scene4', 'Scene5'];
+    testScenes = ['Ceramic', 'RadialMenu'];
     onSelectedSceneChange(this, handleSceneChange);
   }
 
@@ -35,7 +35,7 @@ class TestScene extends ceramic.Scene {
       switch (sceneName) {
         case 'Ceramic':
           App.app.scenes.main = new tests.TestCeramic();
-        case 'Radial Menu':
+        case 'RadialMenu':
           App.app.scenes.main = new tests.TestRadialMenu();
         default:
           trace('Unknown scene: ' + sceneName);
