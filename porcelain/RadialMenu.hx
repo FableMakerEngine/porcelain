@@ -31,7 +31,7 @@ class RadialMenu extends Visual implements Observable {
   var inputMap: InputMap<ShortcutInput>;
 
   public var arcColor(default, set): Color = Color.fromRGB(100, 100, 100);
-  public var arcHighlightColor(default, set): Color = Color.fromRGB(100, 100, 100);
+  public var arcHighlightColor(default, set): Color = Color.ORANGE;
   public var easeInDuration(default, set): Float = 0.2;
 
   public var options(default, null): RadialMenuOptions;
