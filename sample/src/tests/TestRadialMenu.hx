@@ -1,13 +1,12 @@
 package tests;
 
-import ceramic.Scene;
 import ceramic.Point;
 import ceramic.Quad;
 import ceramic.Color;
 import porcelain.RadialMenuButton;
 import porcelain.RadialMenu;
 
-class TestRadialMenu extends Scene {
+class TestRadialMenu extends TestScene {
   var radialMenu: RadialMenu;
 
   public function new() {
@@ -23,6 +22,8 @@ class TestRadialMenu extends Scene {
   }
 
   public override function create() {
+    super.create();
+    titleText.content = "Radial Menu (Click to activate)";
     createRadialMenu();
   }
 

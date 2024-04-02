@@ -1,52 +1,58 @@
 package;
 
+import ceramic.App;
 import ceramic.Tilemap;
 import ceramic.Text;
-
-using ceramic.TilemapPlugin;
+import elements.Im;
 
 class TestScene extends ceramic.Scene {
-  private var text: Text;
-  private var tileemap: Tilemap;
+  var titleText: Text;
+  private var testScenes: Array<String>;
+
+  @observe var selectedScene: Int = -1;
 
   public function new() {
     super();
-  }
-
-  public override function preload() {
-    trace('Test Scene Initialized!');
-    assets.addTilemap('data/MapTest.tmx');
+    testScenes = ['Initial', 'Ceramic', 'RadialMenu'];
+    onSelectedSceneChange(this, handleSceneChange);
   }
 
   public override function create() {
-    createText();
-    createTilemap();
-  }
-
-  private function createText() {
-    text = new Text();
-    text.content = "Hello World!";
-    text.color = ceramic.Color.WHITE;
-    text.pointSize = 52;
-    text.anchor(0.5, 0.5);
-    text.pos(screen.width * 0.5, screen.height * 0.5);
-    text.depth = 10;
-    add(text);
-  }
-
-  private function createTilemap() {
-    var tilemap = new Tilemap();
-    tilemap.roundTilesTranslation = 1;
-    tilemap.tilemapData = assets.tilemap('data/MapTest.tmx');
-    tilemap.depth = 0;
-    add(tilemap);
-  }
-
-  public override function resize(width: Float, height: Float) {
-    text.pos(width * 0.5, height * 0.5);
+    titleText = new Text();
+    titleText.content = 'Select a Scene';
+    titleText.color = ceramic.Color.WHITE;
+    titleText.pointSize = 52;
+    titleText.anchor(0.5, 0.5);
+    titleText.pos(screen.width * 0.5, screen.height * 0.5);
+    add(titleText);
   }
 
   public override function update(dt: Float) {
-    text.rotation += 25 * dt;
+    super.update(dt);
+    debugWindow();
+  }
+
+  public function debugWindow() {
+    Im.begin('Change Scene', 300);
+    Im.text('Scene');
+    Im.list(250, Im.array(testScenes), Im.int(selectedScene), true);
+    Im.end();
+  }
+
+  function handleSceneChange(selectedScene: Int, prevScene: Int) {
+    if (selectedScene != -1) {
+      var sceneName = testScenes[selectedScene];
+
+      switch (sceneName) {
+        case 'Initial':
+          App.app.scenes.main = new TestScene();
+        case 'Ceramic':
+          App.app.scenes.main = new tests.TestCeramic();
+        case 'RadialMenu':
+          App.app.scenes.main = new tests.TestRadialMenu();
+        default:
+          trace('Unknown scene: ' + sceneName);
+      }
+    }
   }
 }

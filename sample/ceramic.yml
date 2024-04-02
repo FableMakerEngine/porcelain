@@ -30,10 +30,10 @@ app:
     #- http
 
     # UI-related classes
-    #- ui
+    - ui
 
     # Immediate GUI utility (requires ui plugin)
-    #- elements
+    - elements
 
     # Gif capture utility
     #- gif
@@ -48,7 +48,7 @@ app:
     #- spine
 
     # Dear ImGui support (clay backend only)
-    #- imgui
+    # - imgui
 
     # Midi support (experimental, clay backend only)
     #- midi
