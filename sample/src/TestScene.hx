@@ -13,7 +13,7 @@ class TestScene extends ceramic.Scene {
 
   public function new() {
     super();
-    testScenes = ['Initial', 'Ceramic', 'RadialMenu'];
+    testScenes = ['Initial', 'Ceramic', 'RadialMenu', 'Draggable'];
     onSelectedSceneChange(this, handleSceneChange);
   }
 
@@ -50,6 +50,8 @@ class TestScene extends ceramic.Scene {
           App.app.scenes.main = new tests.TestCeramic();
         case 'RadialMenu':
           App.app.scenes.main = new tests.TestRadialMenu();
+        case 'Draggable':
+          App.app.scenes.main = new tests.TestDraggable();
         default:
           trace('Unknown scene: ' + sceneName);
       }
